@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 
 
@@ -9,41 +9,41 @@ class User:
     id: str
     username: str
     email: str
-    created_at: datetime = field(default_factory=datetime.now)
+    created_at: datetime
 
-    channels: list[Channel] = field(default_factory=list)
-    playlists: list[Playlist] = field(default_factory=list)
-    subscriptions: list[Subscription] = field(default_factory=list)
-    comments: list[Comment] = field(default_factory=list)
-    histories: list[History] = field(default_factory=list)
+    channels: list[Channel]
+    playlists: list[Playlist]
+    subscriptions: list[Channel]
+    comments: list[Comment]
+    histories: list[History]
 
 
 @dataclass
 class Channel:
     id: str
     name: str
-    created_at: datetime = field(default_factory=datetime.now)
-    user_id: str = field(default_factory=str)
+    created_at: datetime
+    owner: User
 
-    videos: list[Video] = field(default_factory=list)
-    subscriptions: list[Subscription] = field(default_factory=list)
+    videos: list[Video]
+    subscribers: list[User]
 
     @property
-    def subscribers(self) -> int: ...  # type: ignore
+    def sub_count(self) -> int: ...  # type: ignore
 
 
 @dataclass
 class Video:
     id: str
     title: str
-    description: str = ""
-    uploaded_at: datetime = field(default_factory=datetime.now)
+    description: str
+    uploaded_at: datetime
 
-    channel_id: str = field(default_factory=str)
+    channel: Channel
 
-    comments: list[Comment] = field(default_factory=list)
-    playlists: list[PlaylistVideo] = field(default_factory=list)
-    histories: list[History] = field(default_factory=list)
+    comments: list[Comment]
+    playlists: list[Playlist]
+    histories: list[History]
 
     @property
     def views(self) -> int: ...  # type: ignore
@@ -53,37 +53,25 @@ class Video:
 class Comment:
     id: str
     comment_text: str
-    commented_at: datetime = field(default_factory=datetime.now)
+    commented_at: datetime
 
-    user_id: str = field(default_factory=str)
-    video_id: str = field(default_factory=str)
+    user_id: User
+    video_id: Video
 
 
 @dataclass
 class Playlist:
     id: str
     name: str
-    created_at: datetime = field(default_factory=datetime.now)
+    created_at: datetime
 
-    user_id: str = field(default_factory=str)
-    videos: list[PlaylistVideo] = field(default_factory=list)
-
-
-@dataclass
-class PlaylistVideo:
-    playlist_id: str
-    video_id: str
-
-
-@dataclass
-class Subscription:
-    user_id: str
-    channel_id: str
+    owner: User
+    videos: list[Video]
 
 
 @dataclass
 class History:
     id: str
-    watched_at: datetime = field(default_factory=datetime.now)
-    user_id: str | None = None
-    video_id: str = field(default_factory=str)
+    watched_at: datetime
+    video: Video
+    user: User | None
