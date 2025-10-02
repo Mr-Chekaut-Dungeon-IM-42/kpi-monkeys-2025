@@ -29,7 +29,7 @@ entity "CHANNEL" as CHANNEL {
   name        : string
   created_at  : date
 
-  user_id     : string
+  owner_id    : string
 
   --
   subscribers : int
@@ -51,7 +51,7 @@ entity "PLAYLIST" as PLAYLIST {
   name        : string
   created_at  : date
 
-  user_id     : string
+  author_id   : string
 }
 
 entity "PLAYLIST_VIDEO" as PLAYLIST_VIDEO {
