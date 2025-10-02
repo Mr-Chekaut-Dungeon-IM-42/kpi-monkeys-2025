@@ -1,0 +1,89 @@
+@startuml
+hide methods
+hide stereotypes
+
+entity "USER" as USER {
+  * id : string
+  --
+  username   : string
+  email      : string
+  created_at : date
+}
+
+entity "VIDEO" as VIDEO {
+  * id : string
+  --
+  title        : string
+  description  : text
+  uploaded_at  : date
+
+  channel_id   : string
+
+  --
+  views    : int
+}
+
+entity "CHANNEL" as CHANNEL {
+  * id : string
+  --
+  name        : string
+  created_at  : date
+
+  user_id     : string
+
+  --
+  subscribers : int
+}
+
+entity "COMMENT" as COMMENT {
+  * id : string
+  --
+  comment_text : text
+  commented_at : date
+
+  user_id      : string
+  video_id     : string
+}
+
+entity "PLAYLIST" as PLAYLIST {
+  * id : string
+  --
+  name        : string
+  created_at  : date
+
+  user_id     : string
+}
+
+entity "PLAYLIST_VIDEO" as PLAYLIST_VIDEO {
+  * playlist_id : string
+  * video_id    : string
+}
+
+entity "SUBSCRIPTION" as SUBSCRIPTION {
+  * user_id    : string
+  * channel_id : string
+}
+
+entity "HISTORY" as HISTORY {
+  * id : string
+  --
+  watched_at : date
+  user_id    : string
+  video_id   : string
+}
+
+USER        "1" *-- "0..*" COMMENT        : writes
+USER        "1" *-- "0..*" CHANNEL        : owns
+USER        "1" o-- "0..*" PLAYLIST       : creates
+USER        "1" *-- "0..*" SUBSCRIPTION   : subscribes
+USER     "0..1" o-- "0..*" HISTORY      : views
+
+VIDEO    "1" *-- "0..*" COMMENT           : receives
+VIDEO    "1" *-- "0..*" HISTORY         : receives
+
+CHANNEL  "1" *-- "0..*" VIDEO             : uploads
+CHANNEL  "1" *-- "0..*" SUBSCRIPTION      : has
+
+PLAYLIST "1" *-- "0..*" PLAYLIST_VIDEO    : contains
+VIDEO    "1" o-- "0..*" PLAYLIST_VIDEO : belongs to
+@enduml
