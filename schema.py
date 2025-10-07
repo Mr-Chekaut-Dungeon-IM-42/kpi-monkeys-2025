@@ -26,7 +26,6 @@ class Channel:
     owner: User
 
     videos: list[Video]
-    subscribers: list[User]
 
     @property
     def sub_count(self) -> int: ...  # type: ignore
