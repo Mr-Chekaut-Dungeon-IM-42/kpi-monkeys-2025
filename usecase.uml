@@ -1,0 +1,50 @@
+@startuml
+skinparam actorStyle Hollow
+skinparam defaultTextAlignment center
+skinparam maxMessageSize 150
+skinparam Shadowing false
+skinparam ParticipantPadding 20
+
+left to right direction
+
+actor "Viewer" as viewer
+(Watch videos) as _watch_videos
+(Watch ads) as _watch_ads
+note right of _watch_ads : Viewer watches,\ncreator receives revenue
+_watch_videos <|-- _watch_ads
+_watch_videos <|-- (Get video recommendations)
+viewer --> _watch_videos
+
+(Create and manage playlists) as _create_playlists
+_create_playlists <.. (Save videos to playlist)
+viewer --> _create_playlists
+
+(Create and manage channels) as _create_channels
+viewer --> _create_channels
+
+(Subscribe to channels) as _subscribe
+_subscribe <.. (Receive notifications)
+viewer --> _subscribe
+
+(Give feedback) as _give_feedback
+_give_feedback <|-- (Write comments)
+_give_feedback <|-- (Upvote/downvote)
+viewer --> _give_feedback
+(Get viewing history) as _get_history
+_watch_videos <.. _get_history
+
+top to bottom direction
+actor "Creator" as creator
+_create_channels .. creator
+(Upload and manage videos) as _upload
+creator --> _upload
+(Receive feedback) as _recv_feedback
+_upload <.. _recv_feedback
+_give_feedback <.. _recv_feedback
+_recv_feedback <.. (Communicate with viewers)
+_recv_feedback <|-- (View channel stats)
+(Earn revenue) as _earn
+_earn <.. _watch_ads
+creator --> _earn
+
+@enduml
