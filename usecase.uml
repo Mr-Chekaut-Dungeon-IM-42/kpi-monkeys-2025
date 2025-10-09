@@ -5,46 +5,69 @@ skinparam maxMessageSize 150
 skinparam Shadowing false
 skinparam ParticipantPadding 20
 
-left to right direction
+' TODO: Donations and sponsorships (green)
+' Security: video flagging and Moderator actor (blue)
+
+' Then red might be split up as: video hosting/social media functionality.
+' Blue as security and safety
+' Green as revenue
+
+top to bottom direction
 
 actor "Viewer" as viewer
-(Watch videos) as _watch_videos
-(Watch ads) as _watch_ads
+(Watch videos) as _watch_videos #DC7F9B
+(Watch ads) as _watch_ads #00E09D
 note right of _watch_ads : Viewer watches,\ncreator receives revenue
 _watch_videos <|-- _watch_ads
-_watch_videos <|-- (Get video recommendations)
+(Get video recommendations) as _get_recs
+_watch_videos <|-- _get_recs
 viewer --> _watch_videos
 
-(Create and manage playlists) as _create_playlists
+(Create and manage playlists) as _create_playlists #DC7F9B
 _create_playlists <.. (Save videos to playlist)
 viewer --> _create_playlists
 
-(Create and manage channels) as _create_channels
+(Create and manage channels) as _create_channels #DC7F9B
 viewer --> _create_channels
 
-(Subscribe to channels) as _subscribe
-_subscribe <.. (Receive notifications)
+(Authorize with login and password) as _authorize #98C1D9
+(Two-factor auth) as _2fa
+_authorize <|-- _2fa
+(Reset password) as _reset_password
+_authorize <|-- _reset_password
+viewer --> _authorize
+
+(Subscribe to channels) as _subscribe #DC7F9B
+(Receive notifications) as _recv_notifications
+_subscribe <.. _recv_notifications
 viewer --> _subscribe
 
-(Give feedback) as _give_feedback
+(Give feedback) as _give_feedback #DC7F9B
 _give_feedback <|-- (Write comments)
 _give_feedback <|-- (Upvote/downvote)
 viewer --> _give_feedback
 (Get viewing history) as _get_history
 _watch_videos <.. _get_history
 
-top to bottom direction
+
+
+left to right direction
 actor "Creator" as creator
 _create_channels .. creator
-(Upload and manage videos) as _upload
+
+(Upload and manage videos) as _upload #DC7F9B
 creator --> _upload
-(Receive feedback) as _recv_feedback
+
+(Receive feedback) as _recv_feedback #DC7F9B
 _upload <.. _recv_feedback
 _give_feedback <.. _recv_feedback
-_recv_feedback <.. (Communicate with viewers)
-_recv_feedback <|-- (View channel stats)
-(Earn revenue) as _earn
-_earn <.. _watch_ads
+_recv_feedback <..left.. (Communicate with viewers)
+
+(View channel stats) as _view_stats #yellow
+creator --> _view_stats
+
+(Earn revenue) as _earn #00E09D
+_watch_ads <.. _earn
 creator --> _earn
 
 @enduml
