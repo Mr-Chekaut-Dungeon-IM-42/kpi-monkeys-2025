@@ -14,7 +14,7 @@ skinparam ParticipantPadding 20
 
 top to bottom direction
 
-actor "Viewer" as viewer
+actor "General user\n(Viewer)" as viewer
 (Watch videos) as _watch_videos #DC7F9B
 (Watch ads) as _watch_ads #00E09D
 note right of _watch_ads : Viewer watches,\ncreator receives revenue
@@ -36,6 +36,17 @@ _authorize <|-- _2fa
 (Reset password) as _reset_password
 _authorize <|-- _reset_password
 viewer --> _authorize
+
+(Flag video or comment) as _flag_video #98C1D9
+viewer --> _flag_video
+
+actor "Moderator" as moderator #98C1D9
+_flag_video .. moderator
+(View dedicated feed\nwith flagged content) as _view_flagged #98C1D9
+moderator --> _view_flagged
+(Take action on bad content) as _take_action #98C1D9
+moderator --> _take_action
+_view_flagged <.. _take_action
 
 (Subscribe to channels) as _subscribe #DC7F9B
 (Receive notifications) as _recv_notifications
@@ -63,11 +74,10 @@ _upload <.. _recv_feedback
 _give_feedback <.. _recv_feedback
 _recv_feedback <..left.. (Communicate with viewers)
 
-(View channel stats) as _view_stats #yellow
+(View channel stats) as _view_stats #00E09D
 creator --> _view_stats
 
 (Earn revenue) as _earn #00E09D
 _watch_ads <.. _earn
 creator --> _earn
-
 @enduml
