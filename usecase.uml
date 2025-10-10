@@ -5,17 +5,13 @@ skinparam maxMessageSize 150
 skinparam Shadowing false
 skinparam ParticipantPadding 20
 
-' TODO: Donations and sponsorships (green)
-' Security: video flagging and Moderator actor (blue)
 
-' Then red might be split up as: video hosting/social media functionality.
-' Blue as security and safety
-' Green as revenue
-
-top to bottom direction
 
 actor "General user\n(Viewer)" as viewer
+top to bottom direction
 (Watch videos) as _watch_videos #DC7F9B
+(Make one-time donations) as _donate #00E09D
+_watch_videos <.. _donate
 (Watch ads) as _watch_ads #00E09D
 note right of _watch_ads : Viewer watches,\ncreator receives revenue
 _watch_videos <|-- _watch_ads
@@ -40,7 +36,10 @@ viewer --> _authorize
 (Flag video or comment) as _flag_video #98C1D9
 viewer --> _flag_video
 
+
+
 actor "Moderator" as moderator #98C1D9
+top to bottom direction
 _flag_video .. moderator
 (View dedicated feed\nwith flagged content) as _view_flagged #98C1D9
 moderator --> _view_flagged
@@ -49,21 +48,23 @@ moderator --> _take_action
 _view_flagged <.. _take_action
 
 (Subscribe to channels) as _subscribe #DC7F9B
-(Receive notifications) as _recv_notifications
+(Receive notifications) as _recv_notifications 
+(Upgrade to paid subscription) as _upgrade_to_paid #00E09D
 _subscribe <.. _recv_notifications
+_subscribe <|-- _upgrade_to_paid
 viewer --> _subscribe
 
 (Give feedback) as _give_feedback #DC7F9B
 _give_feedback <|-- (Write comments)
 _give_feedback <|-- (Upvote/downvote)
-viewer --> _give_feedback
+viewer -> _give_feedback
 (Get viewing history) as _get_history
 _watch_videos <.. _get_history
 
 
 
-left to right direction
 actor "Creator" as creator
+left to right direction
 _create_channels .. creator
 
 (Upload and manage videos) as _upload #DC7F9B
@@ -78,6 +79,7 @@ _recv_feedback <..left.. (Communicate with viewers)
 creator --> _view_stats
 
 (Earn revenue) as _earn #00E09D
+_earn <.. (Withdraw money)
 _watch_ads <.. _earn
 creator --> _earn
 @enduml
