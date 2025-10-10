@@ -80,6 +80,8 @@ creator --> _view_stats
 
 (Earn revenue) as _earn #00E09D
 _earn <.. (Withdraw money)
+_earn ..> _donate
+_earn ..> _upgrade_to_paid
 _watch_ads <.. _earn
 creator --> _earn
 @enduml
