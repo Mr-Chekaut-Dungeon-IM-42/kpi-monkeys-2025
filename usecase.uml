@@ -9,26 +9,21 @@ skinparam ParticipantPadding 20
 
 actor "General user\n(Viewer)" as viewer
 top to bottom direction
+
 (Watch videos) as _watch_videos #DC7F9B
-(Make one-time donations) as _donate #00E09D
-_watch_videos <.. _donate
 (Watch ads) as _watch_ads #00E09D
-note right of _watch_ads : Viewer watches,\ncreator receives revenue
 _watch_videos <|-- _watch_ads
 (Get video recommendations) as _get_recs
 _watch_videos <|-- _get_recs
 viewer --> _watch_videos
 
 (Create and manage playlists) as _create_playlists #DC7F9B
-_create_playlists <.. (Save videos to playlist)
+(Save videos to playlist) as _save_video
+viewer --> _save_video
+_create_playlists <.. _save_video
 viewer --> _create_playlists
 
-(Create and manage channels) as _create_channels #DC7F9B
-viewer --> _create_channels
-
 (Authorize with login and password) as _authorize #98C1D9
-(Two-factor auth) as _2fa
-_authorize <|-- _2fa
 (Reset password) as _reset_password
 _authorize <|-- _reset_password
 viewer --> _authorize
@@ -36,52 +31,54 @@ viewer --> _authorize
 (Flag video or comment) as _flag_video #98C1D9
 viewer --> _flag_video
 
-
-
-actor "Moderator" as moderator #98C1D9
-top to bottom direction
-_flag_video .. moderator
-(View dedicated feed\nwith flagged content) as _view_flagged #98C1D9
-moderator --> _view_flagged
-(Take action on bad content) as _take_action #98C1D9
-moderator --> _take_action
-_view_flagged <.. _take_action
-
 (Subscribe to channels) as _subscribe #DC7F9B
-(Receive notifications) as _recv_notifications 
-(Upgrade to paid subscription) as _upgrade_to_paid #00E09D
-_subscribe <.. _recv_notifications
-_subscribe <|-- _upgrade_to_paid
 viewer --> _subscribe
+
+(Support creator) as _support #00E09D
+viewer --> _support
+(Make one-time donations) as _donate #00E09D
+_watch_videos <.. _donate
+_support <|-- _donate
+(Upgrade to paid subscription) as _upgrade_to_paid #00E09D
+_subscribe <|-- _upgrade_to_paid
+_support <|-- _upgrade_to_paid
 
 (Give feedback) as _give_feedback #DC7F9B
 _give_feedback <|-- (Write comments)
 _give_feedback <|-- (Upvote/downvote)
 viewer -> _give_feedback
 (Get viewing history) as _get_history
+viewer --> _get_history
 _watch_videos <.. _get_history
+
+
+
+actor "Moderator" as moderator #98C1D9
+top to bottom direction
+
+(View dedicated feed\nwith flagged content) as _view_flagged #98C1D9
+moderator --> _view_flagged
+(Take action on bad content) as _take_action #98C1D9
+_take_action <.. _flag_video
+moderator --> _take_action
+_view_flagged <.. _take_action
 
 
 
 actor "Creator" as creator
 left to right direction
-_create_channels .. creator
 
 (Upload and manage videos) as _upload #DC7F9B
 creator --> _upload
 
-(Receive feedback) as _recv_feedback #DC7F9B
-_upload <.. _recv_feedback
-_give_feedback <.. _recv_feedback
-_recv_feedback <..left.. (Communicate with viewers)
+(Create and manage channels) as _create_channels #DC7F9B
+_create_channels <.. _subscribe
+creator --> _create_channels
+
+(Exchange feedback) as _creator_feedback #DC7F9B
+creator --> _creator_feedback
+_upload <.. _creator_feedback
 
 (View channel stats) as _view_stats #00E09D
 creator --> _view_stats
-
-(Earn revenue) as _earn #00E09D
-_earn <.. (Withdraw money)
-_earn ..> _donate
-_earn ..> _upgrade_to_paid
-_watch_ads <.. _earn
-creator --> _earn
 @enduml
